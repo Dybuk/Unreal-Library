@@ -128,6 +128,15 @@ namespace UELib.Core
                     ++ tokenCode;
                 }
 
+                if (_Container.Package.Build == UnrealPackage.GameBuild.BuildName.Mass_Effect_Xbox)
+                {
+                    // It seems that ExprToken.InstanceDelegate is actually ExprToken.DynArrayAddItem. But I'm don't know about the other way. Maybe
+                    if (tokenCode == (byte)ExprToken.InstanceDelegate)
+                    {
+                        tokenCode = (byte)ExprToken.DynArrayAddItem;
+                    }
+                }
+
                 #if APB
                 if( _Container.Package.Build == UnrealPackage.GameBuild.BuildName.APB && _Container.Package.LicenseeVersion >= 32 )
                 {
@@ -178,11 +187,16 @@ namespace UELib.Core
                     CurrentTokenIndex = -1;
                     DeserializedTokens = new List<Token>();
                     _Labels = new List<ULabelEntry>();
+                    Console.Out.WriteLine("Hex code: "+Buffer.GetData((int)_Container.ScriptOffset, (int)_Container.ByteScriptSize));
+
                     while( CodePosition < codeSize )
                     {
                         try
                         {
+                            int prePosition = (int)Buffer.Position;
                             var t = DeserializeNext();
+                            int postPosition = (int)Buffer.Position;
+                            Console.Out.WriteLine("Full Command Detected, Data: " + Buffer.GetData(prePosition, postPosition - prePosition));
                             if( !(t is EndOfScriptToken) )
                                 continue;
 
@@ -683,7 +697,15 @@ namespace UELib.Core
                     case (byte)ExprToken.VarByte:
                     case (byte)ExprToken.VarBool:
                     //case (byte)ExprToken.VarObject:   // See UndefinedVariable
-                        tokenItem = new DynamicVariableToken();
+                        if (_Container.Package.Build == UnrealPackage.GameBuild.BuildName.Mass_Effect)
+                        {
+                            // Don't know what this op code is for.... just know it takes two bytes.
+                            tokenItem = new MassEffectUnknownToken();
+                        }
+                        else
+                        {
+                            tokenItem = new DynamicVariableToken();
+                        }
                         break;
                     #endregion
 
@@ -867,6 +889,8 @@ namespace UELib.Core
                 {
                     tokenItem = new UnknownExprToken();
                 }
+
+                Console.Out.WriteLine("Token is: "+ tokenCode.ToString("X") + " type: " + tokenItem.GetType().Name + " pos: " + Buffer.Position);
 
                 tokenItem.Decompiler = this;
                 tokenItem.RepresentToken = tokenCode;

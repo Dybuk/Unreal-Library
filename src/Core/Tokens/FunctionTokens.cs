@@ -221,7 +221,8 @@ namespace UELib.Core
                 public override void Deserialize( IUnrealStream stream )
                 {
                     // TODO: Corrigate Version (Definitely not in MOHA, but in roboblitz(369))
-                    if( stream.Version >= 178 && stream.Version < 421/*MOHA*/ )
+                    //       Not in mass effect xbox 391
+                    if( stream.Version >= 178 && stream.Version < 391/*MOHA*/ )
                     {
                         byte isSuperCall = stream.ReadByte();
                         Decompiler.AlignSize( sizeof(byte) );

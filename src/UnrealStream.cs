@@ -178,7 +178,7 @@ namespace UELib
                 var strBytes = new byte[size - 1];
                 Read( strBytes, 0, size - 1 );
                 ++ BaseStream.Position; // null
-                if( _MyEncoding == Encoding.BigEndianUnicode )
+                if (_UnrealStream.BigEndianCode)
                 {
                     Array.Reverse( strBytes );
                 }
@@ -194,7 +194,7 @@ namespace UELib
                 Read( strBytes, 0, (size * 2) - 2 );
                 BaseStream.Position += 2; // null
                 // Convert Byte Str to a String type
-                if( _MyEncoding == Encoding.BigEndianUnicode )
+                if (_UnrealStream.BigEndianCode)
                 {
                     Array.Reverse( strBytes );
                 }
@@ -209,6 +209,27 @@ namespace UELib
             return String.Empty;
         }
 
+        public string GetData(int offset, int count)
+        {
+            if (_UnrealStream == null)
+                return "";
+
+            byte[] bytes = new byte[count];
+            var prePosition = _UnrealStream.Position;
+
+            _UnrealStream.Seek(offset, SeekOrigin.Begin);
+            _UnrealStream.Read(bytes, 0, count);
+            _UnrealStream.Position = prePosition;
+            _UnrealStream.Seek(prePosition, SeekOrigin.Begin);
+
+            if (_UnrealStream.BigEndianCode)
+            {
+                Array.Reverse(bytes);
+            }
+
+            return BitConverter.ToString(bytes);
+        }
+
         public string ReadAnsi()
         {
             var strBytes = new List<byte>();
@@ -220,7 +241,7 @@ namespace UELib
                     goto nextChar;
                 }
             var s = Encoding.UTF8.GetString( strBytes.ToArray() );
-            if( _MyEncoding == Encoding.BigEndianUnicode )
+            if (_UnrealStream.BigEndianCode)
             {
                 Enumerable.Reverse( s );
             }
@@ -239,7 +260,7 @@ namespace UELib
                     goto nextWord;
                 }
             var s = Encoding.Unicode.GetString( strBytes.ToArray() );
-            if( _MyEncoding == Encoding.BigEndianUnicode )
+            if (_UnrealStream.BigEndianCode)
             {
                 Enumerable.Reverse( s );
             }
@@ -771,6 +792,11 @@ namespace UELib
         public float ReadFloat()
         {
             return UR.ReadSingle();
+        }
+
+        public string GetData(int offset, int count)
+        {
+            return UR.GetData(offset, count);
         }
 
         #region Macros

@@ -305,6 +305,22 @@ namespace UELib.Core
                     Decompiler.AlignSize( 13 );
                 }
             }
+
+            public class MassEffectUnknownToken : Token
+            {
+                public override void Deserialize(IUnrealStream stream)
+                {
+                    stream.ReadByte();
+                    stream.ReadByte();
+
+                    Decompiler.AlignSize(2);
+                }
+
+                public override string Decompile()
+                {
+                    return "**Unknown op code**";
+                }
+            }
         }
     }
 }

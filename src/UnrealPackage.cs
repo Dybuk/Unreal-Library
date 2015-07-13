@@ -441,6 +441,18 @@ namespace UELib
                 Hawken,
 
                 /// <summary>
+                /// 491/1008
+                /// </summary>
+                [Build( 491, 1008)]
+                Mass_Effect,
+
+                /// <summary>
+                /// 391/92
+                /// </summary>
+                [Build( 391, 92)]
+                Mass_Effect_Xbox,
+
+                /// <summary>
                 /// 904/009
                 /// </summary>
                 [Build( 904, 904, 9u, 9u, 0, 0 )]
@@ -1327,6 +1339,7 @@ namespace UELib
                 if( !(exp.Object is UnknownObject || exp.Object.ShouldDeserializeOnDemand) )
                 {
                     //Console.WriteLine( "Deserializing object:" + exp.ObjectName );
+                    Console.WriteLine("Deserializing object:" + exp.ObjectName + "ClassName:" + exp.ClassName + " BufferPos: " + exp.GetBufferPosition());
                     exp.Object.BeginDeserializing();
                 }
                 OnNotifyPackageEvent( new PackageEventArgs( PackageEventArgs.Id.Object ) );
@@ -1574,6 +1587,10 @@ namespace UELib
         [PublicAPI]
         [System.Diagnostics.Contracts.Pure]public bool IsCooked()
         {
+            if ( Build == GameBuild.BuildName.Mass_Effect || Build == GameBuild.BuildName.Mass_Effect_Xbox )
+            {
+                return false;
+            }
             return HasPackageFlag( Flags.PackageFlags.Cooked ) && Version >= VCOOKEDPACKAGES;
         }
 
