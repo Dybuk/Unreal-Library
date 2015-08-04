@@ -5,7 +5,7 @@
         public partial class UByteCodeDecompiler
         {
             private const uint ArrayMethodEndParmsVersion = 648;    // TODO: Corrigate Version
-            private const uint ArrayMethodSizeParmsVersion = 480;   // TODO: Corrigate Version   (Definitely before 490(GoW))
+            private const uint ArrayMethodSizeParmsVersion = 495;   // TODO: Corrigate Version   (Definitely before 490(GoW))
 
             public class ArrayElementToken : Token
             {
