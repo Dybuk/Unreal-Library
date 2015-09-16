@@ -28,7 +28,16 @@ namespace UELib
         public void Deserialize( IUnrealStream stream )
         {
             Name = stream.ReadText();
-            Flags = stream.Version >= QWORDVersion ? stream.ReadUInt64() : stream.ReadUInt32();
+            
+            // Mass effect 2
+            if (stream.Version == 512)
+            {
+                Flags = stream.ReadUInt32();
+            }
+            else
+            {
+                Flags = stream.Version >= QWORDVersion ? stream.ReadUInt64() : stream.ReadUInt32();
+            }
 #if DEOBFUSCATE
     // De-obfuscate names that contain unprintable characters!
             foreach( char c in Name )

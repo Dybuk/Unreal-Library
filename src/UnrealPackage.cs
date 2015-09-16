@@ -453,6 +453,12 @@ namespace UELib
                 Mass_Effect_Xbox,
 
                 /// <summary>
+                /// 512/130
+                /// </summary>
+                [Build( 512, 130)]
+                Mass_Effect2,
+
+                /// <summary>
                 /// 904/009
                 /// </summary>
                 [Build( 904, 904, 9u, 9u, 0, 0 )]
@@ -1587,7 +1593,7 @@ namespace UELib
         [PublicAPI]
         [System.Diagnostics.Contracts.Pure]public bool IsCooked()
         {
-            if ( Build == GameBuild.BuildName.Mass_Effect || Build == GameBuild.BuildName.Mass_Effect_Xbox )
+            if ( Build == GameBuild.BuildName.Mass_Effect2 || Build == GameBuild.BuildName.Mass_Effect || Build == GameBuild.BuildName.Mass_Effect_Xbox )
             {
                 return false;
             }
